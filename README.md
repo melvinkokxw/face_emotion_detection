@@ -41,7 +41,7 @@ To get a local copy up and running follow these simple steps.
 ### Installation
 
 1. Clone the repo
-```sh
+```git
 git clone https://github.com/KTAN119/Face_Emotion_Detection
 ```
 2. Install NPM packages
@@ -55,7 +55,8 @@ pip install -r requirement.txt
 ## Usage
 
 1. To Detect Image
-```python emotion_detection.py --file_type 'image' --img_file INPUT_IMAGE_FILE_PATH --output_image_file OUTPUT_IMAGE_DIRECTORY_PATH --weight RESNET101_WEIGHT_PATH --cascade_file CASCADE_FILE_PATH
+```
+python emotion_detection.py --file_type 'image' --img_file INPUT_IMAGE_FILE_PATH --output_image_file OUTPUT_IMAGE_DIRECTORY_PATH --weight RESNET101_WEIGHT_PATH --cascade_file CASCADE_FILE_PATH
 ```
 2. To Detect Video
 ```
