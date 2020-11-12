@@ -165,7 +165,7 @@ elif opt.file_type == 'image':
     img_item = os.path.join(opt.output_image_file, "output_img.jpg")
     cv2.imwrite(img_item, frame)
 
-elif file_type == 'real-time':
+elif opt.file_type == 'real-time':
     cap = cv2.VideoCapture(0)
 
     while True:
