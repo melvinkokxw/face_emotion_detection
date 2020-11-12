@@ -1,14 +1,12 @@
 import argparse
+import os
+
+import cv2
+import torch
+import torch.nn as nn
 from PIL import Image
 from pytorchcv.model_provider import get_model
 from torchvision import transforms
-import torchvision
-from torch.utils.data import random_split, DataLoader, Dataset
-import torch.nn as nn
-import torch
-import numpy as np
-import os
-import cv2
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--file_type", type=str, default=None,
