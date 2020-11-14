@@ -59,8 +59,9 @@ test_transform = transforms.Compose([
 
 
 def preprocess(image):
-    image = Image.fromarray(image).convert("RGB")  # Webcam frames are numpy array format
+    # Webcam frames are numpy array format
     # Therefore transform back to PIL image
+    image = Image.fromarray(image).convert("RGB")
     image = test_transform(image)
     image = image.float()
     #image = Variable(image, requires_autograd=True)
@@ -68,6 +69,7 @@ def preprocess(image):
         image = image.cuda()
     image = image.unsqueeze(0)
     return image
+
 
 def check_rotation(video_file):
     """Checks if given video file has rotation metadata
@@ -111,6 +113,7 @@ def check_rotation(video_file):
 
     return rotate_code
 
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNNModel().to(device)
 if torch.cuda.is_available():
@@ -133,13 +136,12 @@ if opt.input_type == "video":
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            if rotate_code is not None: # Rotate frame if necessary
+            if rotate_code is not None:  # Rotate frame if necessary
                 frame = cv2.rotate(frame, rotate_code)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(
                 gray, scaleFactor=1.5, minNeighbors=5)
             for(x, y, w, h) in faces:
-                #            print(x, y, w, h)
                 roi_gray = gray[y:y+h, x:x+w]
                 roi_color = frame[y:y+h, x:x+w]
 
@@ -158,13 +160,13 @@ if opt.input_type == "video":
                 end_cord_x = x+w
                 end_cord_y = y+h
                 cv2.rectangle(frame, (x, y), (end_cord_x,
-                                            end_cord_y), color, stroke)
+                                              end_cord_y), color, stroke)
 
             img_item = os.path.join(frames_path, f"{counter}.png")
             cv2.imwrite(img_item, frame)
 
             counter += 1
-        
+
         else:
             cap.release()
             cv2.destroyAllWindows()
@@ -180,7 +182,7 @@ if opt.input_type == "video":
         img_array.append(img)
 
     out = cv2.VideoWriter(os.path.join(
-        opt.output_video_directory, "output_vid.mp4"), cv2.VideoWriter_fourcc(*"MP4V"), 15, size)
+        opt.output_video_directory, "output_vid.mp4"), cv2.VideoWriter_fourcc(*"MP4V"), 30, size)
 
     for i in range(len(img_array)):
         out.write(img_array[i])
@@ -246,7 +248,7 @@ elif opt.input_type == "real-time":
             end_cord_x = x+w
             end_cord_y = y+h
             cv2.rectangle(frame, (x, y), (end_cord_x,
-                                        end_cord_y), color, stroke)
+                                          end_cord_y), color, stroke)
 
         cv2.imshow("frame", frame)
         if cv2.waitKey(20) & 0xFF == ord("q"):
