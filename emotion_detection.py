@@ -79,49 +79,52 @@ emotions = ["Angry", "Disgust", "Fear", "Happy", "Neutral", "Sad", "Surprise"]
 
 face_cascade = cv2.CascadeClassifier(opt.cascade_file)
 
+if opt.file_type == "video":
     os.makedirs(opt.output_video_directory, exist_ok=True)
     counter = 0
     cap = cv2.VideoCapture(opt.video_file)
-    _, frame = cap.read()
-    if frame is not None:
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(
-            gray, scaleFactor=1.5, minNeighbors=5)
-        for(x, y, w, h) in faces:
-            #            print(x, y, w, h)
-            roi_gray = gray[y:y+h, x:x+w]
-            roi_color = frame[y:y+h, x:x+w]
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if ret:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(
+                gray, scaleFactor=1.5, minNeighbors=5)
+            for(x, y, w, h) in faces:
+                #            print(x, y, w, h)
+                roi_gray = gray[y:y+h, x:x+w]
+                roi_color = frame[y:y+h, x:x+w]
 
-            img = preprocess(roi_gray).to(device)
-            with torch.no_grad():
-                logits = model(img)
-                prediction = torch.argmax(logits, dim=1)
+                img = preprocess(roi_gray).to(device)
+                with torch.no_grad():
+                    logits = model(img)
+                    prediction = torch.argmax(logits, dim=1)
 
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            emotion = emotions[prediction]
-            color = (255, 0, 0)
-            stroke = 2
-            cv2.putText(frame, emotion, (x, y), font,
-                        1, color, stroke, cv2.LINE_AA)
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                emotion = emotions[prediction]
+                color = (255, 0, 0)
+                stroke = 2
+                cv2.putText(frame, emotion, (x, y), font,
+                            1, color, stroke, cv2.LINE_AA)
 
-            end_cord_x = x+w
-            end_cord_y = y+h
-            cv2.rectangle(frame, (x, y), (end_cord_x,
-                                          end_cord_y), color, stroke)
+                end_cord_x = x+w
+                end_cord_y = y+h
+                cv2.rectangle(frame, (x, y), (end_cord_x,
+                                            end_cord_y), color, stroke)
 
             img_item = os.path.join(opt.output_video_directory, f"{counter}.png")
-        # cv2.imshow("frame", frame)
-        # if cv2.waitKey(20) & 0xFF == ord("q"):
-        #     break
+            cv2.imwrite(img_item, frame)
 
-        counter += 1
-    cap.release()
-    cv2.destroyAllWindows()
+            counter += 1
+        
+        else:
+            cap.release()
+            cv2.destroyAllWindows()
+            break
 
     img_array = []
-    no_img = len(os.listdir(opt.output_video_file))
-    for counter in range(no_img):
-        filename = os.path.join(opt.output_video_file, f"{counter}.png")
+    size = set()
+    for i in range(counter):
+        filename = os.path.join(opt.output_video_directory, f"{i}.png")
         img = cv2.imread(filename)
         height, width, layers = img.shape
         size = (width, height)
