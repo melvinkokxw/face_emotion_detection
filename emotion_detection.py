@@ -23,6 +23,8 @@ parser.add_argument("--weight", type=str, default="weights/vgg19.pth",
                     help="resnet101 weight path")
 parser.add_argument("--cascade_file", type=str, default="haarcascade_frontalface_alt2.xml",
                     help="haar cascade file path")
+parser.add_argument("--classifier", type=str, default="vgg19",
+                    help="classifier type. resnet101 / vgg19")
 opt = parser.parse_args()
 print(opt)
 
@@ -31,7 +33,7 @@ class CNNModel(nn.Module):
     def __init__(self):
         super(CNNModel, self).__init__()
         # Load pretrained network as backbone
-        pretrained = get_model('resnet101', pretrained=True)
+        pretrained = get_model(opt.classifier, pretrained=True)
         self.backbone = pretrained.features
         self.output = pretrained.output
         self.classifier = nn.Linear(1000, 7)
