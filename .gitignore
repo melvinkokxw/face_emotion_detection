@@ -137,5 +137,10 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# Pytorch weight file
+# Pytorch weight file and folder
+weights/
 *.pth
+
+# Output folders
+output_image/
+output_video/
