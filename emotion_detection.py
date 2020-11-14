@@ -9,19 +9,19 @@ from pytorchcv.model_provider import get_model
 from torchvision import transforms
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file_type", type=str, default=None,
-                    help="image/video/real-time")
-parser.add_argument("--video_file", type=str, default='/home/students/acct2014_04/DIP/input_video',
+parser.add_argument("--file_type", type=str, default="real-time",
+                    help="image / video / real-time")
+parser.add_argument("--video_file", type=str, default="face_video.mp4",
                     help="input video file path")
-parser.add_argument("--img_file", type=str, default='/home/students/acct2014_04/DIP/input_image',
+parser.add_argument("--img_file", type=str, default="face_image.jpg",
                     help="input image file path")
-parser.add_argument("--output_video_file", type=str, default='/home/students/acct2014_04/DIP/output_video',
+parser.add_argument("--output_video_directory", type=str, default="output_video",
                     help="output video file path")
-parser.add_argument("--output_image_file", type=str, default='/home/students/acct2014_04/DIP/output_image',
+parser.add_argument("--output_image_directory", type=str, default="output_image",
                     help="output image file path")
-parser.add_argument("--weight", type=str, default='/home/students/acct2014_04/DIP/CNN_Weight_Original_Clear_Resnet101/weights_epoch_29_acc_0.6388966285873502.pth',
+parser.add_argument("--weight", type=str, default="weights/vgg19.pth",
                     help="resnet101 weight path")
-parser.add_argument("--cascade_file", type=str, default='/home/students/acct2014_04/DIP/haarcascade_frontalface_alt2.xml',
+parser.add_argument("--cascade_file", type=str, default="haarcascade_frontalface_alt2.xml",
                     help="haar cascade file path")
 opt = parser.parse_args()
 print(opt)
@@ -77,8 +77,7 @@ emotions = ["Angry", "Disgust", "Fear", "Happy", "Neutral", "Sad", "Surprise"]
 
 face_cascade = cv2.CascadeClassifier(opt.cascade_file)
 
-if opt.file_type == 'video':
-    os.makedirs(opt.output_video_file, exist_ok=True)
+    os.makedirs(opt.output_video_directory, exist_ok=True)
     counter = 0
     cap = cv2.VideoCapture(opt.video_file)
     _, frame = cap.read()
@@ -108,8 +107,7 @@ if opt.file_type == 'video':
             cv2.rectangle(frame, (x, y), (end_cord_x,
                                           end_cord_y), color, stroke)
 
-        img_item = os.path.join(opt.output_video_file, f"{counter}.png")
-        cv2.imwrite(img_item, frame)
+            img_item = os.path.join(opt.output_video_directory, f"{counter}.png")
         # cv2.imshow("frame", frame)
         # if cv2.waitKey(20) & 0xFF == ord("q"):
         #     break
@@ -128,14 +126,13 @@ if opt.file_type == 'video':
         img_array.append(img)
 
     out = cv2.VideoWriter(os.path.join(
-        opt.output_video_file, "output_vid.mp4"), cv2.VideoWriter_fourcc(*'MP4V'), 15, size)
+        opt.output_video_directory, "output_vid.mp4"), cv2.VideoWriter_fourcc(*"MP4V"), 15, size)
 
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
 
-elif opt.file_type == 'image':
-    os.makedirs(opt.output_image_file, exist_ok=True)
+    os.makedirs(opt.output_image_directory, exist_ok=True)
     frame = cv2.imread(opt.img_file)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(
@@ -163,7 +160,7 @@ elif opt.file_type == 'image':
         end_cord_y = y+h
         cv2.rectangle(frame, (x, y), (end_cord_x, end_cord_y), color, stroke)
 
-    img_item = os.path.join(opt.output_image_file, "output_img.jpg")
+    img_item = os.path.join(opt.output_image_directory, "output_img.jpg")
     cv2.imwrite(img_item, frame)
 
 elif opt.file_type == 'real-time':
