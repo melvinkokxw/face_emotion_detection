@@ -13,9 +13,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input_type", type=str, default="real-time",
                     choices=["image", "video", "real-time"],
                     help="type of input")
-parser.add_argument("--video_file", type=str, default="face_video.mp4",
+parser.add_argument("--video_file", type=str, default="input/face_video.mp4",
                     help="input video file path")
-parser.add_argument("--img_file", type=str, default="face_image.jpg",
+parser.add_argument("--img_file", type=str, default="input/face_image.jpg",
                     help="input image file path")
 parser.add_argument("--output_video_directory", type=str, default="output_video",
                     help="output video file path")
