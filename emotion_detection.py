@@ -87,9 +87,19 @@ def check_rotation(video_file):
     rotate_code : enum or None
         Flag fror cv2.rotate to decide how much to rotate the image. 
         None if no rotation is required
-    """    
-    meta_dict = ffmpeg.probe(video_file)
-    rotation_angle = int(meta_dict["streams"][0]["tags"]["rotate"])
+    """
+    try:
+        meta_dict = ffmpeg.probe(video_file)
+    except ffmpeg.Error as e:
+        print("stdout:", e.stdout.decode("utf8"))
+        print("stderr:", e.stderr.decode("utf8"))
+        return None
+
+    try:
+        rotation_angle = int(meta_dict["streams"][0]["tags"]["rotate"])
+    except KeyError as e:
+        print("KeyError:", e)
+        rotation_angle = None
 
     rotate_code = None
     if rotation_angle == 90:
