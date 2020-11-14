@@ -10,8 +10,9 @@ from pytorchcv.model_provider import get_model
 from torchvision import transforms
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--file_type", type=str, default="real-time",
-                    help="image / video / real-time")
+parser.add_argument("--input_type", type=str, default="real-time",
+                    choices=["image", "video", "real-time"],
+                    help="type of input")
 parser.add_argument("--video_file", type=str, default="face_video.mp4",
                     help="input video file path")
 parser.add_argument("--img_file", type=str, default="face_image.jpg",
@@ -21,11 +22,12 @@ parser.add_argument("--output_video_directory", type=str, default="output_video"
 parser.add_argument("--output_image_directory", type=str, default="output_image",
                     help="output image file path")
 parser.add_argument("--weight", type=str, default="weights/vgg19.pth",
-                    help="resnet101 weight path")
+                    help="classifier model weight file path")
 parser.add_argument("--cascade_file", type=str, default="haarcascade_frontalface_alt2.xml",
                     help="haar cascade file path")
 parser.add_argument("--classifier", type=str, default="vgg19",
-                    help="classifier type. resnet101 / vgg19")
+                    choices=["vgg19", "resnet101"],
+                    help="classifier type")
 opt = parser.parse_args()
 print(opt)
 
@@ -111,7 +113,7 @@ emotions = ["Angry", "Disgust", "Fear", "Happy", "Neutral", "Sad", "Surprise"]
 
 face_cascade = cv2.CascadeClassifier(opt.cascade_file)
 
-if opt.file_type == "video":
+if opt.input_type == "video":
     os.makedirs(opt.output_video_directory, exist_ok=True)
     cap = cv2.VideoCapture(opt.video_file)
     rotate_code = check_rotation(opt.video_file)
@@ -173,7 +175,7 @@ if opt.file_type == "video":
         out.write(img_array[i])
     out.release()
 
-elif opt.file_type == "image":
+elif opt.input_type == "image":
     os.makedirs(opt.output_image_directory, exist_ok=True)
     frame = cv2.imread(opt.img_file)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -205,7 +207,7 @@ elif opt.file_type == "image":
     img_item = os.path.join(opt.output_image_directory, "output_img.jpg")
     cv2.imwrite(img_item, frame)
 
-elif opt.file_type == "real-time":
+elif opt.input_type == "real-time":
     cap = cv2.VideoCapture(0)
 
     while True:
