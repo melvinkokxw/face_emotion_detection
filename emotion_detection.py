@@ -124,7 +124,8 @@ emotions = ["Angry", "Disgust", "Fear", "Happy", "Neutral", "Sad", "Surprise"]
 face_cascade = cv2.CascadeClassifier(opt.cascade_file)
 
 if opt.input_type == "video":
-    os.makedirs(opt.output_video_directory, exist_ok=True)
+    frames_path = os.path.join(opt.output_video_directory, "output_frames")
+    os.makedirs(frames_path, exist_ok=True)
     cap = cv2.VideoCapture(opt.video_file)
     rotate_code = check_rotation(opt.video_file)
 
@@ -159,7 +160,7 @@ if opt.input_type == "video":
                 cv2.rectangle(frame, (x, y), (end_cord_x,
                                             end_cord_y), color, stroke)
 
-            img_item = os.path.join(opt.output_video_directory, f"{counter}.png")
+            img_item = os.path.join(frames_path, f"{counter}.png")
             cv2.imwrite(img_item, frame)
 
             counter += 1
@@ -172,7 +173,7 @@ if opt.input_type == "video":
     img_array = []
     size = set()
     for i in range(counter):
-        filename = os.path.join(opt.output_video_directory, f"{i}.png")
+        filename = os.path.join(frames_path, f"{i}.png")
         img = cv2.imread(filename)
         height, width, layers = img.shape
         size = (width, height)
