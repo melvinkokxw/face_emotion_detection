@@ -56,7 +56,7 @@ test_transform = transforms.Compose([
 
 
 def preprocess(image):
-    image = Image.fromarray(image).convert('RGB')  # Webcam frames are numpy array format
+    image = Image.fromarray(image).convert("RGB")  # Webcam frames are numpy array format
     # Therefore transform back to PIL image
     image = test_transform(image)
     image = image.float()
@@ -67,7 +67,7 @@ def preprocess(image):
     return image
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = CNNModel().to(device)
 if torch.cuda.is_available():
     state_dict = torch.load(opt.weight)
@@ -137,6 +137,7 @@ if opt.file_type == "video":
         out.write(img_array[i])
     out.release()
 
+elif opt.file_type == "image":
     os.makedirs(opt.output_image_directory, exist_ok=True)
     frame = cv2.imread(opt.img_file)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -168,7 +169,7 @@ if opt.file_type == "video":
     img_item = os.path.join(opt.output_image_directory, "output_img.jpg")
     cv2.imwrite(img_item, frame)
 
-elif opt.file_type == 'real-time':
+elif opt.file_type == "real-time":
     cap = cv2.VideoCapture(0)
 
     while True:
@@ -177,7 +178,7 @@ elif opt.file_type == 'real-time':
         faces = face_cascade.detectMultiScale(
             gray, scaleFactor=1.5, minNeighbors=5)
         for(x, y, w, h) in faces:
-            print(x, y, w, h)
+            # print(x, y, w, h)
             roi_gray = gray[y:y+h, x:x+w]
             roi_color = frame[y:y+h, x:x+w]
 
@@ -196,10 +197,10 @@ elif opt.file_type == 'real-time':
             end_cord_x = x+w
             end_cord_y = y+h
             cv2.rectangle(frame, (x, y), (end_cord_x,
-                                          end_cord_y), color, stroke)
+                                        end_cord_y), color, stroke)
 
-        cv2.imshow('frame', frame)
-        if cv2.waitKey(20) & 0xFF == ord('q'):
+        cv2.imshow("frame", frame)
+        if cv2.waitKey(20) & 0xFF == ord("q"):
             break
 
     cap.release()
