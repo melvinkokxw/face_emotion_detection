@@ -152,10 +152,10 @@ if opt.input_type == "video":
 
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 emotion = emotions[prediction]
-                color = (255, 0, 0)
-                stroke = 2
+                color = (0, 0, 255)
+                stroke = 4
                 cv2.putText(frame, emotion, (x, y), font,
-                            1, color, stroke, cv2.LINE_AA)
+                            2, color, stroke, cv2.LINE_AA)
 
                 end_cord_x = x+w
                 end_cord_y = y+h
